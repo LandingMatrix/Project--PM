@@ -4,7 +4,7 @@
 package core;
 
 /**
- * @author iTzEinstein118Xx
+ * @author Albert Ferguson
  *
  */
 public class Resume {
