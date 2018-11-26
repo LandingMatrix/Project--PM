@@ -42,14 +42,14 @@ public class User {
 		
 		public Schools getSchools() { return _schools; }
 		public Info getInfo() { return _info; }
-		public void setSchools(Schools _schools) { this._schools = _schools; }
-		public void setInfo(Info _info) { this._info = _info;}
+		public void setSchools(Schools _schools) { _schools = this._schools; }
+		public void setInfo(Info _info) { _info = this._info;}
 	}
 	
 	/**
-	 * @param <Mobile> Integer Mobile Contact
+	 * @param <Mobile> String Mobile Contact
 	 * @param <Email> String email address
-	 * @param <Phone> Integer contact or other number
+	 * @param <Phone> String contact or other number
 	 */
 	private static class ContactInfo<Mobile, Email, Phone> {
 		private Mobile _mobile;
@@ -64,23 +64,23 @@ public class User {
 		public Mobile getMobile() { return _mobile; }
 		public Email getEmail() { return _email; }
 		public Phone getPhone() { return _phone; }
-		public void setMobile(Mobile _mobile) { this._mobile = _mobile;}
-		public void setEmail(Email _email) { this._email = _email;}
-		public void setPhone(Phone _phone) { this._phone = _phone;}
+		public void setMobile(Mobile _mobile) { _mobile = this._mobile;}
+		public void setEmail(Email _email) { _email = this._email;}
+		public void setPhone(Phone _phone) { _phone = this._phone;}
 	}
 	
-	private Integer Mobile, ContactPhone;
+	private String Mobile, ContactPhone;
 	private String Email, UsrName;
 	private final String DOB;
 	private double ID;
 	private byte[] DaysFree;
 	private SchoolHist<String, Integer, Integer> _schoolHist; //school history
 	private BioInfo<Object[], String> _bio; //Array of SchoolHist values
-	private ContactInfo<Integer, String, Integer> _contact;
+	private ContactInfo<String, String, String> _contact;
 	//INSERT HERE WHEN RESUME CLASS COMPLETE:private Resume resume;
 	
 	public User(String UsrName, String Email, String DOB, String Bio, String[] Schools,
-				int Mobile, int ContactPhone, int[] Days, boolean All) {
+				String Mobile, String ContactPhone, int[] Days, boolean All) {
 		
 		ID = Math.random(); //test implementer for User ID
 		this.UsrName = UsrName;
@@ -92,9 +92,8 @@ public class User {
 		} else {
 			throw new IllegalArgumentException("Date of birth cannot change!");
 		}
-		
-		setContactInfo(Mobile, ContactPhone, Email);
-		setBioInfo(Schools, Bio);
+		_contact = new ContactInfo<String, String, String>(Mobile, ContactPhone, Email);
+		_bio = new BioInfo<Object[], String>(Schools, Bio);
 		if(Days.length > 7) {
 			throw new IllegalArgumentException("Array cannot be more than total days in a week!");
 		} else {
@@ -105,11 +104,10 @@ public class User {
 	public String getUser() { return UsrName; }
 	public double getID() { return ID; }
 	public String getBirth() { return DOB; }
-	public ContactInfo<Integer, String, Integer> getContact() { return _contact; }
+	public ContactInfo<String, String, String> getContact() { return _contact; }
 	public BioInfo<Object[], String> getBio() { return _bio; }
 	
-	public void setContactInfo(Integer Mobile, Integer ContactPhone, String Email) { 
-		_contact.setMobile(Mobile);
+	public void setContactInfo(String Mobile, String ContactPhone, String Email) { 
 		_contact.setPhone(ContactPhone);
 		_contact.setEmail(Email);
 	}
@@ -140,7 +138,7 @@ public class User {
 		if(All == false) 
 		{
 			for (int n : Days) { 
-				DayTracker[n] = 1;
+				DayTracker[n-1] = 1;
 			} setDaysFree(DayTracker);
 			return DayTracker;
 		} else {
