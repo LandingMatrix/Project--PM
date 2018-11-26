@@ -6,6 +6,7 @@ package core;
  * @author Albert Ferguson
  *
  */
+@SuppressWarnings("unused")
 public class User {
 
 	/**
@@ -69,7 +70,8 @@ public class User {
 	}
 	
 	private Integer Mobile, ContactPhone;
-	private String Email, UsrName, DOB; 
+	private String Email, UsrName;
+	private final String DOB;
 	private double ID;
 	private byte[] DaysFree;
 	private SchoolHist<String, Integer, Integer> _schoolHist; //school history
@@ -82,8 +84,14 @@ public class User {
 		
 		ID = Math.random(); //test implementer for User ID
 		this.UsrName = UsrName;
-		this.DOB = DOB;
 		this.Email = Email;
+		
+		boolean Empty = DOB.isEmpty();
+		if(Empty == false) {
+			this.DOB = DOB;
+		} else {
+			throw new IllegalArgumentException("Date of birth cannot change!");
+		}
 		
 		setContactInfo(Mobile, ContactPhone, Email);
 		setBioInfo(Schools, Bio);
