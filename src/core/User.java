@@ -24,13 +24,6 @@ public class User {
 			this._BeginDate = _BeginDate;
 			this._EndDate = _EndDate;
 		}
-			
-		public School getSchool() { return _School; }
-		public BeginDate getBeginDate() { return _BeginDate; }
-		public EndDate getEndDate() { return _EndDate; }
-		public void setSchool(School _School) { this._School = _School; }
-		public void setBeginDate(BeginDate _BeginDate) { this._BeginDate = _BeginDate; }
-		public void setEndDate(EndDate _EndDate) { this._EndDate = _EndDate; }
 	}
 	
 	/**
@@ -74,36 +67,58 @@ public class User {
 		public void setEmail(Email _email) { this._email = _email;}
 		public void setPhone(Phone _phone) { this._phone = _phone;}
 	}
-	@SuppressWarnings("unused")
+	
 	private Integer Mobile, ContactPhone;
-	@SuppressWarnings("unused")
-	private String Email, Username, Birth; 
-	private double UserID;
-	@SuppressWarnings("unused")
+	private String Email, UsrName, DOB; 
+	private double ID;
 	private byte[] DaysFree;
 	private SchoolHist<String, Integer, Integer> _schoolHist; //school history
 	private BioInfo<Object[], String> _bio; //Array of SchoolHist values
 	private ContactInfo<Integer, String, Integer> _contact;
-	//INSERT HERE WHEN RESUME CLASS COMPLETE:public Resume resume;
+	//INSERT HERE WHEN RESUME CLASS COMPLETE:private Resume resume;
 	
-	public User(String name, String dob, Integer ContactPhone, String Email) {
-		Username = name;
-		Birth = dob;
-		UserID = Math.random(); //test implementer for User ID
-		this.ContactPhone = ContactPhone;
+	public User(String UsrName, String Email, String DOB, String Bio, String[] Schools,
+				int Mobile, int ContactPhone, int[] Days, boolean All) {
+		
+		ID = Math.random(); //test implementer for User ID
+		this.UsrName = UsrName;
+		this.DOB = DOB;
 		this.Email = Email;
-	}
-	
-	public String getUser() { return Username; }
-	public double getID() { return UserID; }
-	public String getBirth() { return Birth; }
+		
+		setContactInfo(Mobile, ContactPhone, Email);
+		setBioInfo(Schools, Bio);
+		if(Days.length > 7) {
+			throw new IllegalArgumentException("Array cannot be more than total days in a week!");
+		} else {
+			setDaysFree(WorkDays(Days, All));
+			}
+		}
+
+	public String getUser() { return UsrName; }
+	public double getID() { return ID; }
+	public String getBirth() { return DOB; }
 	public ContactInfo<Integer, String, Integer> getContact() { return _contact; }
 	public BioInfo<Object[], String> getBio() { return _bio; }
-	public SchoolHist<String, Integer, Integer> getSchoolHist() { return _schoolHist; }
 	
-	public void setMobile(Integer Mobile) { this.Mobile = Mobile; }
-	public void setContactPhone(Integer ContactPhone) { this.ContactPhone = ContactPhone; }
-	public void setEmail(String Email) { this.Email = Email; }
+	public void setContactInfo(Integer Mobile, Integer ContactPhone, String Email) { 
+		_contact.setMobile(Mobile);
+		_contact.setPhone(ContactPhone);
+		_contact.setEmail(Email);
+	}
+	
+	public void setBioInfo(String[] Schools, String Bio) {
+		
+		int Start = 0, End = 0;
+		int k = Schools.length;
+		Object[] Hist = new Object[k];
+		for (int n = 0; n <= k; n++) {
+			SchoolHist<String, Integer, Integer> _schoolHist = new SchoolHist<String, Integer, Integer>(Schools[n], Start, End);
+			Hist[n] = _schoolHist;
+		}
+		BioInfo<Object[], String> _Bio = new BioInfo<Object[], String>(Hist, Bio);
+		_Bio = _bio; 
+	}
+	
 	public void setDaysFree(byte[] DaysFree) { this.DaysFree = DaysFree; }
 	
 	/**
@@ -112,19 +127,19 @@ public class User {
 	 * @param All Optional param.
 	 * @return 0 for success
 	 */
-	public int WorkDays(int[] Days, boolean All) {
+	private byte[] WorkDays(int[] Days, boolean All) {
 		byte[] DayTracker = new byte[] { 0 , 0 , 0 , 0 , 0 , 0 , 0 };
 		if(All == false) 
 		{
 			for (int n : Days) { 
 				DayTracker[n] = 1;
 			} setDaysFree(DayTracker);
-			return 0;
-		} else if (All == true) {
+			return DayTracker;
+		} else {
 			for (int n : DayTracker) {
 				DayTracker[n] = 1;
 			} setDaysFree(DayTracker);
-			return 0;
-		} else return 1;
+			return DayTracker;
+		}
 	}
 }
