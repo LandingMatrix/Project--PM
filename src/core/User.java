@@ -73,14 +73,14 @@ public class User {
 	private String Email, UsrName;
 	private final String DOB;
 	private double ID;
-	private byte[] DaysFree;
+	private BitSet DaysFree;
 	private SchoolHist<String, Integer, Integer> _schoolHist; //school history
 	private BioInfo<Object[], String> _bio; //Array of SchoolHist values
 	private ContactInfo<String, String, String> _contact;
 	//INSERT HERE WHEN RESUME CLASS COMPLETE:private Resume resume;
 	
 	public User(String UsrName, String Email, String DOB, String Bio, String[] Schools,
-				String Mobile, String ContactPhone, int[] Days, boolean All) {
+				String Mobile, String ContactPhone, BitSet Days, boolean All) {
 		
 		ID = Math.random(); //test implementer for User ID
 		this.UsrName = UsrName;
@@ -94,7 +94,7 @@ public class User {
 		}
 		_contact = new ContactInfo<String, String, String>(Mobile, ContactPhone, Email);
 		_bio = new BioInfo<Object[], String>(Schools, Bio);
-		if(Days.length > 7) {
+		if(Days.length() > 7) {
 			throw new IllegalArgumentException("Array cannot be more than total days in a week!");
 		} else {
 			setDaysFree(WorkDays(Days, All));
@@ -125,7 +125,7 @@ public class User {
 		_Bio = _bio; 
 	}
 	
-	public void setDaysFree(byte[] DaysFree) { this.DaysFree = DaysFree; }
+	public void setDaysFree(BitSet DaysFree) { this.DaysFree = DaysFree; }
 	
 	/**
 	 * 
@@ -138,13 +138,33 @@ public class User {
 		if(All == false) 
 		{
 			for (int n : Days) { 
-				DayTracker[n-1] = 1;
-			} setDaysFree(DayTracker);
+				DayTracker[n-1] = 1; //I don't know what you are trying to do
+			} setDaysFree(DayTracker);   //set previous record to true?
 			return DayTracker;
 		} else {
 			for (int n : DayTracker) {
 				DayTracker[n] = 1;
 			} setDaysFree(DayTracker);
+			return DayTracker;
+		}
+	}
+	
+	
+	//Bit Array or BitSet conversion
+	//BitSet needs to be imported from java.util.BitSet
+	private BitSet WorkDays(BitSet Days, boolean All) {
+		BitSet DayTracker = new BitSet(7);
+		//values can be retreived using DayTracker.get(index)
+		//will be true/false value
+		if(All == false) 
+		{
+			for (int n : Days) { 
+				DayTracker.set(n-1, true);
+			} setDaysFree(DayTracker);
+			return DayTracker;
+		} else {
+			DayTracker.flip(0,6); //"flips" all values to inverse (0->1), (1->0)
+			setDaysFree(DayTracker);
 			return DayTracker;
 		}
 	}
